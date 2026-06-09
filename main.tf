@@ -29,6 +29,20 @@ resource "proxmox_virtual_environment_vm" "gateway_vm" {
   }
 
   boot_order = ["scsi0"] # tells where to search the boot
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "192.168.1.100/24" #TODO: Unique IP for your Gateway
+        gateway = "192.168.1.1"      #TODO: Your main home router's IP
+      }
+    }
+
+    user_account {
+      username = var.vm_user
+      keys     = [var.ssh_public_key]
+    }
+  }
 }
 
 resource "proxmox_virtual_environment_vm" "apps_vm" {
@@ -58,6 +72,20 @@ resource "proxmox_virtual_environment_vm" "apps_vm" {
   }
 
   boot_order = ["scsi0"]
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "192.168.1.101/24" #TODO: Unique IP for your Apps
+        gateway = "192.168.1.1"      #TODO: Your main home router's IP
+      }
+    }
+
+    user_account {
+      username = var.vm_user
+      keys     = [var.ssh_public_key]
+    }
+  }
 }
 
 resource "proxmox_virtual_environment_vm" "backups_vm" {
@@ -87,4 +115,18 @@ resource "proxmox_virtual_environment_vm" "backups_vm" {
   }
 
   boot_order = ["scsi0"]
+
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "192.168.1.102/24" #TODO: Unique IP for your Backups
+        gateway = "192.168.1.1"      #TODO: Your main home router's IP
+      }
+    }
+
+    user_account {
+      username = var.vm_user
+      keys     = [var.ssh_public_key]
+    }
+  }
 }

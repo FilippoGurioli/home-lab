@@ -31,3 +31,14 @@ variable "network_bridge" {
   description = "The network bridge to attach the VMs to"
   default     = "vmbr0"
 }
+
+variable "ssh_public_key" {
+  type        = string
+  description = "My public SSH key for logging into the VMs"
+}
+
+variable "vm_user" {
+  type        = string
+  description = "The default admin username for the VMs"
+  default     = "homelab"
+}
