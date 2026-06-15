@@ -129,3 +129,33 @@ NOTE: something deleted more than 12 month ago cannot be restored
 ### About Database
 
 - Use a shared instance of `PostgreSQL`
+
+### Operations order
+
+1. Proxmox OS installation
+2. Proxmox OS configuration
+3. VM creation
+4. Networking creation across VMs
+5. Ansible playbook creation
+6. Services creation
+    1. PostgreSQL
+    2. Authelia
+    3. everything else
+
+### Repo Structure
+
+```shell
+/
+├── gateway/
+│   ├── ansible/
+│   └── docker/
+├── applications/
+│   ├── ansible/
+│   └── docker/
+├── common/       # ← Common logics
+│   └── ansible/
+├── backup/
+│   ├── ansible/
+│   └── docker/
+└── secrets/      # ← Ansible Vault encrypted files
+```
