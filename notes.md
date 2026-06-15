@@ -68,7 +68,13 @@ Un-googling myself as much as possible.
 
 ### Vaultwarden
 
-- It should live inside its own VM
+- Should have its own docker network
+- No internet egress except for sync with Bitwarden clients
+- reverse proxy is the only ingress point
 - As soon as my account is created, no other should
 - Use its own 2FA instead of Authelia to avoid circular dependencies
 - During backup procedures it should backup its data too
+
+### Restic
+
+- Print the encryption key to paper, store it somewhere in my house and leave a copy to a close friend
