@@ -141,6 +141,7 @@ NOTE: something deleted more than 12 month ago cannot be restored
     1. PostgreSQL
     2. Authelia
     3. everything else
+7. Backup setup
 
 ### Repo Structure
 
