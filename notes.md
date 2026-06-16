@@ -51,9 +51,10 @@ Un-googling myself as much as possible.
 - OS: Proxmox
   - VMs:
     - Applications: Ubuntu Server LTS
-    - Gateway: Alpine
     - Backup: Debian Stable
       - Restic (to encrypt and push data)
+  - LXCs:
+    - Gateway: Alpine
 
 - Infrastructure:
   - Proxmox OS setup: done manually
@@ -119,16 +120,12 @@ NOTE: something deleted more than 12 month ago cannot be restored
 
 ### About connectivity
 
-- Configure a fixed IP in the router DHCP for each VM
-  - note that DHCP matches an IP with a MAC
-  - Proxmox leaves the same MAC even if the VM changes the underlying metal
-  - edge case: if the VM is re-created instead of being moved
-- Inside each VM `.env` save the IPs of all other VMs
+- Assign to each VM a hostname inside the GL.iNet router so that they can communicate with each other without the need of using IP addresses
 - Use `Traefik` as reverse proxy
 
 ### About Database
 
-- Use a shared instance of `PostgreSQL`
+- Use `PostgreSQL`
 
 ### Operations order
 
@@ -138,9 +135,10 @@ NOTE: something deleted more than 12 month ago cannot be restored
 4. Networking creation across VMs
 5. Ansible playbook creation
 6. Services creation
-    1. PostgreSQL
+    1. Traefik
     2. Authelia
-    3. everything else
+    3. Vaultwarden
+    4. Everything else
 7. Backup setup
 
 ### Repo Structure
