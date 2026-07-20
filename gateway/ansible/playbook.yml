@@ -1,0 +1,11 @@
+- name: Configure Alpine Linux Gateway
+  hosts: gateway
+  become: true
+
+  tasks:
+    - name: Ensure iptables and persistent storage are installed
+      community.general.apk:
+        name:
+          - iptables
+          - iproute2
+        state: present
