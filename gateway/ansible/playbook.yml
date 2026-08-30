@@ -1,11 +1,26 @@
-- name: Configure Alpine Linux Gateway
+- name: Configure Gateway LXC for Phase 1 (Tailscale Only)
   hosts: gateway
   become: true
 
   tasks:
-    - name: Ensure iptables and persistent storage are installed
+    - name: Ensure basic networking tools and Tailscale are installed
       community.general.apk:
         name:
           - iptables
           - iproute2
+          - tailscale
         state: present
+
+    - name: Enable IP Forwarding in kernel settings
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: "1"
+        sysctl_set: true
+        state: present
+        reload: true
+
+    - name: Ensure Tailscale service is enabled and started
+      ansible.builtin.service:
+        name: tailscale
+        enabled: true
+        state: started

@@ -32,7 +32,7 @@ Un-googling myself as much as possible.
 
 ### Hardware Lifecycle
 
-- Now: old laptop - i3-12th | 16GB
+- Now: old laptop - i3-12th | 8GB
 - Tomorrow:
   - or:
     - a NAS
@@ -63,7 +63,7 @@ Un-googling myself as much as possible.
     - sharable `.env` (via Ansible Vault)
     - particularly useful for Gateway node
 - Services: single `Docker Compose` per VM
-- External connectivity: p1-\[TaleScale\] -> p2-\[DuckDNS + SSL\]
+- External connectivity: p1-\[TailScale\] -> p2-\[DuckDNS + SSL\]
 - Internal connectivity (between VMs): Bare LAN connection
 
 ## Details
@@ -71,7 +71,7 @@ Un-googling myself as much as possible.
 ### Gateway
 
 - Responsible of exposing internal services with outer world
-- In the first phase this should be done only through TaleScale in order to be secure
+- In the first phase this should be done only through TailScale in order to be secure
 - In a second moment, it should feature firewall, reverse proxy and use the DuckDNS domain
 
 ### Authelia
