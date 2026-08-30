@@ -29,6 +29,14 @@ Before creating any VM or LXC, the host must have two distinct virtual network b
 - **Gateway LXC Creation:** Create via the Proxmox UI. It **must** have two network interfaces assigned:
     - `eth0` mapped to `vmbr0` (gets IP via DHCP from the home router).
     - `eth1` mapped to `vmbr1` (will be configured with a static IP via Ansible).
+    - **LXC TUN/TAP Device Support:** To allow Tailscale to create virtual network interfaces (`tailscale0`), enable TUN/TAP and Nesting on Proxmox:
+        - Via Proxmox WebUI: Go to `Gateway LXC` > `Options` (or `Resources`/`Features`) and enable **Nesting** and **TUN**.
+        - *(Alternative)* Via PVE Host Shell: Edit `/etc/pve/lxc/100.conf` and append:
+          ```text
+          lxc.cgroup2.devices.allow: c 10:200 rwm
+          lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file
+          ```
+        - *Note:* If Alpine creates a dummy directory `/dev/net/tun` before the device is mounted, remove it via `rm -rf /dev/net/tun` inside the container before starting `tailscaled`.
 - **Target VMs Creation:** Create Application and Backup VMs. Map their network interfaces **only** to `vmbr1` (isolated LAN). They will remain offline until the Gateway is configured.
 
 ## 4. Post-Boot Manual Actions (Pre-Ansible Bootstrap)
@@ -41,8 +49,7 @@ Before creating any VM or LXC, the host must have two distinct virtual network b
 
 ## 5. Post-Bootstrap Manual Approvals
 
-- **Tailscale Subnet Route Approval:** 
-  After running `./bootstrap.sh` and authenticating the Gateway LXC, log in to the [Tailscale Admin Console](https://login.tailscale.com/admin/machines).
+- **Tailscale Subnet Route Approval:** After running `./bootstrap.sh` and authenticating the Gateway LXC, log in to the [Tailscale Admin Console](https://login.tailscale.com/admin/machines).
   1. Locate the `gateway` machine.
   2. Click on `Edit route settings...` under the options menu.
   3. Approve the advertised subnet route: `10.0.0.0/24`.
