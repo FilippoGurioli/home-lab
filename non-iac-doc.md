@@ -50,5 +50,5 @@ Before creating any VM or LXC, the host must have two distinct virtual network b
 
 ### If still using the GL.iNet Wi-Fi Bridge:
 - Fix the GL.iNet to a **Static IP** on the main home router to avoid DHCP lease drops.
-- Blind/lock the 2.4GHz Wi-Fi channel on the home router (e.g., channel 6 or 11) to avoid micro-disconnessions.
+- Blind/lock the 2.4GHz Wi-Fi channel on the home router (e.g., channel 6 or 11) to avoid micro-disconnections.
 - Enable "Ping Watchdog" on the GL.iNet targeting the home router IP to auto-reboot the radio if it hangs.

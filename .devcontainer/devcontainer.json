@@ -1,0 +1,15 @@
+{
+  "name": "Homelab Environment",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": [
+    "--net=host"
+  ],
+  "workspaceFolder": "/workspace",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/tmp/.ssh-host,type=bind,readonly=true"
+  ],
+  "postCreateCommand": "mkdir -p /root/.ssh && cp -r /tmp/.ssh-host/* /root/.ssh/ && chmod 700 /root/.ssh && chmod 600 /root/.ssh/* && chown -R root:root /root/.ssh"
+}
