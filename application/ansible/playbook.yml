@@ -1,0 +1,12 @@
+- name: Configure Ubuntu-Server Application
+  hosts: application
+  become: true
+
+  tasks:
+    - name: Run a simple hello world
+      ansible.builtin.command: echo "Hello from {{ ansible_hostname }}!"
+      register: hello_output
+
+    - name: Show hello world output
+      ansible.builtin.debug:
+        var: hello_output.stdout
