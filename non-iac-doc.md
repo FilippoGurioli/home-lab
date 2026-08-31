@@ -40,8 +40,8 @@ Before creating any VM or LXC, the host must have two distinct virtual network b
         - *Note:* If Alpine creates a dummy directory `/dev/net/tun` before the device is mounted, remove it via `rm -rf /dev/net/tun` inside the container before starting `tailscaled`.
 - **Target VMs Creation & Network Setup:** Create Application and Backup VMs. Map their network interfaces **only** to `vmbr1` (isolated LAN).
     - **Static IP Setup:** During OS installation or initial manual network setup, configure static IPs:
-        - **Backup VM (Debian):** IP `10.0.0.2/24`, Gateway `10.0.0.1`, DNS `1.1.1.1, 8.8.8.8`
-        - **Application VM (Ubuntu):** IP `10.0.0.3/24`, Gateway `10.0.0.1`, DNS `1.1.1.1, 8.8.8.8`
+        - **Application VM (Ubuntu):** IP `10.0.0.2/24`, Gateway `10.0.0.1`, DNS `1.1.1.1, 8.8.8.8`
+        - **Backup VM (Debian):** IP `10.0.0.3/24`, Gateway `10.0.0.1`, DNS `1.1.1.1, 8.8.8.8`
     - **Debian DNS Fix (Backup VM):** Debian Stable minimal does not process `dns-nameservers` in `/etc/network/interfaces` without the `resolvconf` package, leading to failed domain resolution (`ping google.com` fails while `ping 8.8.8.8` works).
         1. Temporarily populate DNS resolution to bypass the chicken-and-egg situation:
            ```bash
@@ -79,8 +79,8 @@ Before creating any VM or LXC, the host must have two distinct virtual network b
 | Proxmox Host | LAN (`vmbr0`) | `192.168.x.x` | Home Router | Node UI (Port 8006) |
 | Gateway LXC (WAN) | `vmbr0` (`eth0`) | DHCP / Static | Home Router | External Access |
 | Gateway LXC (LAN) | `vmbr1` (`eth1`) | `10.0.0.1/24` | - | Internal Gateway |
-| Backup VM | `vmbr1` (`eth0`) | `10.0.0.2/24` | `10.0.0.1` | Internal Only |
-| App VM | `vmbr1` (`eth0`) | `10.0.0.3/24` | `10.0.0.1` | Internal Only |
+| App VM | `vmbr1` (`eth0`) | `10.0.0.2/24` | `10.0.0.1` | Internal Only |
+| Backup VM | `vmbr1` (`eth0`) | `10.0.0.3/24` | `10.0.0.1` | Internal Only |
 
 ### If still using the GL.iNet Wi-Fi Bridge:
 
