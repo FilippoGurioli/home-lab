@@ -1,0 +1,21 @@
+Host gateway.homelab.lan
+  HostName 192.168.8.250
+  User root
+  IdentityFile ~/.ssh/homelab-gateway
+
+Host application.homelab.lan
+  HostName 10.0.0.2
+  User rioly
+  IdentityFile ~/.ssh/homelab-application
+  ProxyJump root@gateway.homelab.lan
+
+Host backup.homelab.lan
+  HostName 10.0.0.3
+  User rioly
+  IdentityFile ~/.ssh/homelab-backup
+  ProxyJump root@gateway.homelab.lan
+
+Host homelab.lan
+  HostName 192.168.8.100
+  User root
+  IdentityFile ~/.ssh/homelab-proxmox
