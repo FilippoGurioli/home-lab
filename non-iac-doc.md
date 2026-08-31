@@ -5,7 +5,8 @@ This documentation tracks manual host-level and infrastructure configurations th
 ## 1. Proxmox Host Initialization
 
 - **No-Subscription Repositories:** Go to `homelab` (node) > `Updates` > `Repositories`. Disable the `pve-enterprise` repository and add the `no-subscription` community repository.
-- **Subscription Nag Popup Removal:** - `/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js`
+- **Subscription Nag Popup Removal:**
+    - `/usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js`
     - remove the part where it sends the message "No valid subscription" (search for it, it is present just once)
     - save and run `systemctl restart pveproxy.service`, logout, refresh the browser page and login
 - **Disable Laptop Lid Switch Suspend:** To prevent the laptop from going to sleep when the lid is closed:
@@ -28,7 +29,7 @@ Before creating any VM or LXC, the host must have two distinct virtual network b
 - **ISO Storage:** Upload standard ISOs to `local` storage (`debian-stable`, `ubuntu-server`, `alpine-virt`).
 - **Gateway LXC Creation:** Create via the Proxmox UI. It **must** have two network interfaces assigned:
     - `eth0` mapped to `vmbr0` (gets IP via DHCP from the home router).
-    - `eth1` mapped to `vmbr1` (will be configured with a static IP via Ansible).
+    - `eth1` mapped to `vmbr1` (will be configured with a static IP via Ansible: `10.0.0.1/24`).
     - **LXC TUN/TAP Device Support:** To allow Tailscale to create virtual network interfaces (`tailscale0`), enable TUN/TAP and Nesting on Proxmox:
         - Via Proxmox WebUI: Go to `Gateway LXC` > `Options` (or `Resources`/`Features`) and enable **Nesting** and **TUN**.
         - *(Alternative)* Via PVE Host Shell: Edit `/etc/pve/lxc/100.conf` and append:
@@ -37,7 +38,20 @@ Before creating any VM or LXC, the host must have two distinct virtual network b
           lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file
           ```
         - *Note:* If Alpine creates a dummy directory `/dev/net/tun` before the device is mounted, remove it via `rm -rf /dev/net/tun` inside the container before starting `tailscaled`.
-- **Target VMs Creation:** Create Application and Backup VMs. Map their network interfaces **only** to `vmbr1` (isolated LAN). They will remain offline until the Gateway is configured.
+- **Target VMs Creation & Network Setup:** Create Application and Backup VMs. Map their network interfaces **only** to `vmbr1` (isolated LAN).
+    - **Static IP Setup:** During OS installation or initial manual network setup, configure static IPs:
+        - **Backup VM (Debian):** IP `10.0.0.2/24`, Gateway `10.0.0.1`, DNS `1.1.1.1, 8.8.8.8`
+        - **Application VM (Ubuntu):** IP `10.0.0.3/24`, Gateway `10.0.0.1`, DNS `1.1.1.1, 8.8.8.8`
+    - **Debian DNS Fix (Backup VM):** Debian Stable minimal does not process `dns-nameservers` in `/etc/network/interfaces` without the `resolvconf` package, leading to failed domain resolution (`ping google.com` fails while `ping 8.8.8.8` works).
+        1. Temporarily populate DNS resolution to bypass the chicken-and-egg situation:
+           ```bash
+           echo "nameserver 1.1.1.1" | sudo tee /etc/resolv.conf
+           echo "nameserver 8.8.8.8" | sudo tee -a /etc/resolv.conf
+           ```
+        2. Install `resolvconf` to permanently bind `/etc/network/interfaces` DNS settings:
+           ```bash
+           sudo apt update && sudo apt install -y resolvconf
+           ```
 
 ## 4. Post-Boot Manual Actions (Pre-Ansible Bootstrap)
 
