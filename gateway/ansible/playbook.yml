@@ -19,8 +19,25 @@
         state: present
         reload: true
 
+    - name: Enable NAT/Masquerading on eth0 for internal subnet
+      ansible.builtin.iptables:
+        table: nat
+        chain: POSTROUTING
+        out_interface: eth0
+        source: 10.0.0.0/24
+        jump: MASQUERADE
+        comment: "NAT traffic from internal network to WAN"
+      notify: Save iptables rules
+
     - name: Ensure Tailscale service is enabled and started
       ansible.builtin.service:
         name: tailscale
         enabled: true
         state: started
+
+  handlers:
+    - name: Save iptables rules
+      ansible.builtin.shell: |
+        rc-update add iptables default
+        mkdir -p /etc/iptables
+        iptables-save -t nat > /etc/iptables/rules-v4
