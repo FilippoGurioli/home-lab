@@ -5,13 +5,13 @@ Host gateway.homelab.lan
 
 Host application.homelab.lan
   HostName 10.0.0.2
-  User root
+  User rioly
   IdentityFile ~/.ssh/homelab-application
   ProxyJump root@gateway.homelab.lan
 
 Host backup.homelab.lan
   HostName 10.0.0.3
-  User root
+  User rioly
   IdentityFile ~/.ssh/homelab-backup
   ProxyJump root@gateway.homelab.lan
 
