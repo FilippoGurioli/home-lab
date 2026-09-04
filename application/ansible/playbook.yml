@@ -3,10 +3,22 @@
   become: true
 
   tasks:
-    - name: Run a simple hello world
-      ansible.builtin.command: echo "Hello from {{ ansible_hostname }}!"
-      register: hello_output
+    - name: Install Docker
+      ansible.builtin.apt:
+        name:
+          - docker.io
+          - docker-compose-v2
+        state: present
+        update_cache: true
 
-    - name: Show hello world output
-      ansible.builtin.debug:
-        var: hello_output.stdout
+    - name: Start and enable Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add rioly user to docker group
+      ansible.builtin.user:
+        name: rioly
+        groups: docker
+        append: true
