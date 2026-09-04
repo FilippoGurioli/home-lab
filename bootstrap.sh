@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+[ -f .env ] || { echo "ERROR: .env file not found"; exit 1; }
+
 INVENTORY="hosts.ini"
 REQUIREMENTS="requirements.yml"
 GATEWAY_PLAYBOOK="./gateway/ansible/playbook.yml"
@@ -10,7 +12,7 @@ echo "==> [1/5] Installing required Ansible collections..."
 ansible-galaxy collection install -r "$REQUIREMENTS"
 
 echo "==> [2/5] Bootstrapping Python on Alpine Gateway..."
-ansible gateway -i "$INVENTORY" -m raw -a "apk add --no-cache python3 && [ -e /usr/bin/python ] || ln -s /usr/bin/python3 /usr/bin/python"
+ansible gateway -i "$INVENTORY" -m command -a "apk add --no-cache python3 && [ -e /usr/bin/python ] || ln -s /usr/bin/python3 /usr/bin/python"
 
 echo "==> [3/5] Verifying Connectivity (Ping)..."
 ansible gateway -i "$INVENTORY" -m ping
