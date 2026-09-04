@@ -46,7 +46,7 @@
 
     - name: Copy Traefik static configuration
       ansible.builtin.copy:
-        src: ../docker/traefik.yml
+        src: ../docker/traefik/traefik.yml
         dest: /home/rioly/apps/traefik.yml
         owner: rioly
         group: rioly
