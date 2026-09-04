@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [ -f "$SCRIPT_DIR/.env" ]; then
+ENV_FILE="$SCRIPT_DIR/../.env"
+if [ -f "$ENV_FILE" ]; then
   set -o allexport
-  source "$SCRIPT_DIR/.env"
+  source "$ENV_FILE"
   set +o allexport
 fi
 
