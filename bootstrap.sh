@@ -19,23 +19,25 @@ echo "==> [4/5] Running Gateway Configuration Playbook..."
 ansible-playbook -i "$INVENTORY" "$GATEWAY_PLAYBOOK"
 
 echo "==> [5/5] Initializing Tailscale Login & Subnet Router..."
-
-ssh -t "root@gateway.homelab.lan" "tailscale up --advertise-routes=10.0.0.0/24"
+ssh root@gateway.homelab.lan "tailscale up --advertise-routes=10.0.0.0/24"
 
 echo ""
 echo "==> Gateway setup completed successfully!"
 echo "==> ACTION REQUIRED: On the loaded tailscale dashboard click on the three dots of the gateway machine"
 echo "==> go to \"Edit subnet routes...\" and tick the 10.0.0.0/24 route"
 
-echo "==> [1/3] Bootstrapping Python on Ubuntu-Server Application..."
-ansible application -i "$INVENTORY" --become \
-  -e "@vars/application.local.yml" \
-  -m raw -a "apt-get update && apt-get install -y python3 python3-apt && [ -e /usr/bin/python ] || ln -s /usr/bin/python3 /usr/bin/python"
+echo ""
+echo "==> [1/4] Setting rioly as passwordless sudoer"
+source .env
+ssh rioly@application.homelab.lan "echo '$APP_PSW' | sudo -S sh -c 'echo \"rioly ALL=(ALL) NOPASSWD:ALL\" > /etc/sudoers.d/rioly-ansible && chmod 0440 /etc/sudoers.d/rioly-ansible'"
 
-echo "==> [2/3] Verifying Connectivity (Ping)..."
+echo "==> [2/4] Bootstrapping Python on Ubuntu-Server Application..."
+ssh rioly@application.homelab.lan "sudo apt-get update && sudo apt-get install -y python3 python3-apt && [ -e /usr/bin/python ] || sudo ln -s /usr/bin/python3 /usr/bin/python"
+
+echo "==> [3/4] Verifying Connectivity (Ping)..."
 ansible application -i "$INVENTORY" -m ping
 
-echo "==> [3/3] Running Application Configuration Playbook..."
+echo "==> [4/4] Running Application Configuration Playbook..."
 ansible-playbook -i "$INVENTORY" "$APPLICATION_PLAYBOOK"
 
 echo "Application setup completed successfully!"
