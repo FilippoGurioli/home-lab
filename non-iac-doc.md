@@ -68,6 +68,13 @@ Before creating any VM or LXC, the host must have two distinct virtual network b
   2. Click on `Edit route settings...` under the options menu.
   3. Approve the advertised subnet route: `10.0.0.0/24`.
 
+## 6. Request a domain in DuckDNS
+
+- **Access [DuckDNS](https://www.duckdns.org/)**
+- **Login**: I used GitHub
+- **Create a domain**: create a unique domain and let it point to `10.0.0.2`
+- **Copy the DuckDNS token**: copy the duck dns token and paste it in `application/docker/.env`
+
 ---
 
 ## Appendix: Quick Reference & Hardware Reminders
