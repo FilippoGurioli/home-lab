@@ -8,7 +8,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080" #TODO: Temporary Debug Dashboard Port
     environment:
       - TZ=Europe/Rome
       - DUCKDNS_TOKEN=${DUCKDNS_TOKEN:-}
@@ -19,19 +18,15 @@ services:
       - ./dynamic:/etc/traefik/dynamic:ro
     networks:
       - proxy-net
-
-  whoami:
-    image: traefik/whoami
-    container_name: whoami
-    restart: unless-stopped
-    networks:
-      - proxy-net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`rioly-homelab.duckdns.org`)"
-      - "traefik.http.routers.whoami.entrypoints=websecure"
-      - "traefik.http.routers.whoami.tls=true"
-      - "traefik.http.routers.whoami.tls.certresolver=duckdns-resolver"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.rioly-homelab.duckdns.org`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls=true"
+      - "traefik.http.routers.dashboard.tls.certresolver=duckdns-resolver"
+      - "traefik.http.routers.dashboard.tls.domains[0].main=rioly-homelab.duckdns.org"
+      - "traefik.http.routers.dashboard.tls.domains[0].sans=*.rioly-homelab.duckdns.org"
+      - "traefik.http.routers.dashboard.service=api@internal"
 
 networks:
   proxy-net:

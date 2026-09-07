@@ -7,7 +7,7 @@ log:
 
 api:
   dashboard: true
-  insecure: true # TODO: set this to false after debugging is finished
+  insecure: false
 
 entryPoints:
   web:
