@@ -22,12 +22,13 @@ entryPoints:
     address: ":443"
 
 certificatesResolvers:
-  myresolver:
+  duckdns-resolver:
     acme:
       email: "rioly@proton.me"
       storage: "/acme.json"
-      httpChallenge:
-        entryPoint: web
+      dnsChallenge:
+        provider: duckdns
+        delayBeforeCheck: 60
 
 providers:
   docker:
