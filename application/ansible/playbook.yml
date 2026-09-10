@@ -33,6 +33,7 @@
       loop:
         - /home/rioly/apps
         - /home/rioly/apps/dynamic
+        - /home/rioly/apps/authelia
 
     - name: Ensure acme.json exists with strict permissions
       ansible.builtin.file:
@@ -52,10 +53,34 @@
         group: rioly
         mode: '0644'
 
+    - name: Copy Traefik dynamic middleware for Authelia
+      ansible.builtin.copy:
+        src: ../docker/traefik/dynamic/authelia.yml
+        dest: /home/rioly/apps/dynamic/authelia.yml
+        owner: rioly
+        group: rioly
+        mode: '0644'
+
     - name: Create external Docker proxy network
       community.docker.docker_network:
         name: proxy-net
         state: present
+
+    - name: Template Authelia configuration.yml
+      ansible.builtin.template:
+        src: ../docker/authelia/configuration.yml.j2
+        dest: /home/rioly/apps/authelia/configuration.yml
+        owner: rioly
+        group: rioly
+        mode: '0600'
+
+    - name: Template Authelia users_database.yml
+      ansible.builtin.template:
+        src: ../docker/authelia/users_database.yml.j2
+        dest: /home/rioly/apps/authelia/users_database.yml
+        owner: rioly
+        group: rioly
+        mode: '0600'
 
     - name: Copy central docker-compose.yml file
       ansible.builtin.copy:

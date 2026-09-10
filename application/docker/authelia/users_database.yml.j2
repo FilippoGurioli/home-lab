@@ -1,0 +1,9 @@
+users:
+  rioly:
+    disabled: false
+    displayname: 'Rioly'
+    password: '{{ lookup("env", "AUTHELIA_ADMIN_PASSWORD_HASH") }}'
+    email: 'rioly@proton.me'
+    groups:
+      - 'admins'
+      - 'dev'

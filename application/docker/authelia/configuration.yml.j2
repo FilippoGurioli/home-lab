@@ -1,0 +1,43 @@
+server:
+  address: 'tcp://0.0.0.0:9091/'
+
+identity_validation:
+  reset_password:
+    jwt_secret: '{{ lookup("env", "AUTHELIA_JWT_SECRET") }}'
+
+session:
+  name: 'authelia_session'
+  secret: '{{ lookup("env", "AUTHELIA_SESSION_SECRET") }}'
+  expiration: '1h'
+  inactivity: '5m'
+  cookies:
+    - domain: 'rioly-homelab.duckdns.org'
+      authelia_url: 'https://auth.rioly-homelab.duckdns.org'
+
+authentication_backend:
+  file:
+    path: '/config/users_database.yml'
+    password:
+      algorithm: argon2id
+
+access_control:
+  default_policy: 'deny'
+  rules:
+    - domain: 'auth.rioly-homelab.duckdns.org'
+      policy: 'bypass'
+    - domain: '*.rioly-homelab.duckdns.org'
+      policy: 'one_factor'
+
+regulation:
+  max_retries: 3
+  find_time: '5m'
+  ban_time: '15m'
+
+storage:
+  encryption_key: '{{ lookup("env", "AUTHELIA_STORAGE_KEY") }}'
+  local:
+    path: '/config/db.sqlite3'
+
+notifier:
+  filesystem:
+    filename: '/config/emails.txt'

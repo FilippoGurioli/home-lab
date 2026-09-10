@@ -28,6 +28,22 @@ services:
       - "traefik.http.routers.dashboard.tls.domains[0].sans=*.rioly-homelab.duckdns.org"
       - "traefik.http.routers.dashboard.service=api@internal"
 
+  authelia:
+    image: authelia/authelia:4
+    container_name: authelia
+    restart: unless-stopped
+    volumes:
+      - ./authelia:/config
+    networks:
+      - proxy-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.authelia.rule=Host(`auth.rioly-homelab.duckdns.org`)"
+      - "traefik.http.routers.authelia.entrypoints=websecure"
+      - "traefik.http.routers.authelia.tls=true"
+      - "traefik.http.routers.authelia.tls.certresolver=duckdns-resolver"
+      - "traefik.http.services.authelia.loadbalancer.server.port=9091"
+
 networks:
   proxy-net:
     external: true

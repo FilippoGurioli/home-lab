@@ -43,6 +43,9 @@ echo "==> [3/4] Verifying Connectivity (Ping)..."
 ansible application -i "$INVENTORY" -m ping
 
 echo "==> [4/4] Running Application Configuration Playbook..."
+set -a
+source ./application/docker/.env
+set +a
 ansible-playbook -i "$INVENTORY" "$APPLICATION_PLAYBOOK"
 
 echo "Application setup completed successfully!"
