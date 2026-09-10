@@ -27,6 +27,7 @@ services:
       - "traefik.http.routers.dashboard.tls.domains[0].main=rioly-homelab.duckdns.org"
       - "traefik.http.routers.dashboard.tls.domains[0].sans=*.rioly-homelab.duckdns.org"
       - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.middlewares=authelia@file"
 
   authelia:
     image: authelia/authelia:4
