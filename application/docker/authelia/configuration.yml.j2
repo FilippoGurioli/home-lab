@@ -15,10 +15,17 @@ session:
       authelia_url: 'https://auth.rioly-homelab.duckdns.org'
 
 authentication_backend:
+  password_reset:
+    disable: true
   file:
     path: '/config/users_database.yml'
     password:
       algorithm: argon2id
+
+definitions:
+  network:
+    lan:
+      - '192.168.0.0/16'
 
 access_control:
   default_policy: 'deny'
@@ -26,7 +33,12 @@ access_control:
     - domain: 'auth.rioly-homelab.duckdns.org'
       policy: 'bypass'
     - domain: '*.rioly-homelab.duckdns.org'
-      policy: 'one_factor' # two_factor
+      networks:
+        - 'lan'
+      policy: 'one_factor'
+    - domain: '*.rioly-homelab.duckdns.org'
+      networks:
+      policy: 'two_factor'
 
 regulation:
   max_retries: 3
