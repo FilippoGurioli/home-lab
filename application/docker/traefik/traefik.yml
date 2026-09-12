@@ -17,9 +17,12 @@ entryPoints:
         entryPoint:
           to: websecure
           scheme: https
+      aliasHeadersStrategy: reject
 
   websecure:
     address: ":443"
+    http:
+      aliasHeadersStrategy: reject
 
 certificatesResolvers:
   duckdns-resolver:
@@ -28,7 +31,8 @@ certificatesResolvers:
       storage: "/acme.json"
       dnsChallenge:
         provider: duckdns
-        delayBeforeCheck: 60
+        propagation:
+          delayBeforeChecks: 60
 
 providers:
   docker:
