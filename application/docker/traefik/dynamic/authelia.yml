@@ -2,8 +2,9 @@ http:
   middlewares:
     authelia:
       forwardAuth:
-        address: "http://authelia:9091/api/verify?type=plain"
+        address: "http://authelia:9091/api/authz/forward-auth"
         trustForwardHeader: true
+        maxResponseBodySize: 8192
         authResponseHeaders:
           - "Remote-User"
           - "Remote-Groups"
