@@ -21,6 +21,7 @@ Un-googling myself as much as possible.
 - searXNG
 - Authelia
 - Uptime Kuma
+- Brevo (SMTP relay - up to 300 emails per day)
 
 ## Machines
 
