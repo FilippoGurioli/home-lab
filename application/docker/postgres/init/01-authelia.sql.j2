@@ -1,0 +1,8 @@
+CREATE DATABASE authelia;
+CREATE USER authelia WITH ENCRYPTED PASSWORD '{{ lookup("env", "AUTHELIA_POSTGRES_PASSWORD") }}';
+GRANT ALL PRIVILEGES ON DATABASE authelia TO authelia;
+
+\c authelia
+
+GRANT ALL ON SCHEMA public TO authelia;
+ALTER SCHEMA public OWNER TO authelia;

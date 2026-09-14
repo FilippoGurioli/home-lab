@@ -34,6 +34,8 @@
         - /home/rioly/apps
         - /home/rioly/apps/dynamic
         - /home/rioly/apps/authelia
+        - /home/rioly/apps/postgres/data
+        - /home/rioly/apps/postgres/init
 
     - name: Ensure acme.json exists with strict permissions
       ansible.builtin.file:
@@ -81,6 +83,14 @@
         owner: rioly
         group: rioly
         mode: '0600'
+
+    - name: Template Postgres init
+      ansible.builtin.template:
+        src: ../docker/postgres/init/01-authelia.sql.j2
+        dest: /home/rioly/apps/postgres/init/01-authelia.sql
+        owner: rioly
+        group: rioly
+        mode: '0644'
 
     - name: Copy central docker-compose.yml file
       ansible.builtin.copy:

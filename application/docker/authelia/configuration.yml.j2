@@ -47,8 +47,11 @@ regulation:
 
 storage:
   encryption_key: '{{ lookup("env", "AUTHELIA_STORAGE_KEY") }}'
-  local:
-    path: '/config/db.sqlite3'
+  postgres:
+    address: 'tcp://postgres:5432'
+    database: 'authelia'
+    username: 'authelia'
+    password: '{{ lookup("env", "AUTHELIA_POSTGRES_PASSWORD") }}'
 
 notifier:
   filesystem:
