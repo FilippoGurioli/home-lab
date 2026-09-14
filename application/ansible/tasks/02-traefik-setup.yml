@@ -1,0 +1,30 @@
+- name: Ensure acme.json exists with strict permissions
+  ansible.builtin.file:
+    path: /home/rioly/apps/acme.json
+    state: touch
+    owner: rioly
+    group: rioly
+    mode: '0600'
+    modification_time: preserve
+    access_time: preserve
+
+- name: Copy Traefik static configuration
+  ansible.builtin.copy:
+    src: ../docker/traefik/traefik.yml
+    dest: /home/rioly/apps/traefik.yml
+    owner: rioly
+    group: rioly
+    mode: '0644'
+
+- name: Copy Traefik dynamic middleware for Authelia
+  ansible.builtin.copy:
+    src: ../docker/traefik/dynamic/authelia.yml
+    dest: /home/rioly/apps/dynamic/authelia.yml
+    owner: rioly
+    group: rioly
+    mode: '0644'
+
+- name: Create external Docker proxy network
+  community.docker.docker_network:
+    name: proxy-net
+    state: present

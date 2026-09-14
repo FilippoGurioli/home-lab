@@ -1,0 +1,16 @@
+- name: Template Authelia configuration.yml
+  ansible.builtin.template:
+    src: ../docker/authelia/configuration.yml.j2
+    dest: /home/rioly/apps/authelia/configuration.yml
+    owner: rioly
+    group: rioly
+    mode: '0600'
+
+- name: Template Authelia users_database.yml
+  ansible.builtin.template:
+    src: ../docker/authelia/users_database.yml.j2
+    dest: /home/rioly/apps/authelia/users_database.yml
+    owner: rioly
+    group: rioly
+    mode: '0600'
+

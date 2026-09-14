@@ -1,0 +1,24 @@
+- name: Install Docker
+  ansible.builtin.apt:
+    name:
+      - docker.io
+      - docker-compose-v2
+    state: present
+    update_cache: true
+
+- name: Start and enable Docker service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Add rioly user to docker group
+  ansible.builtin.user:
+    name: rioly
+    groups: docker
+    append: true
+
+- name: Create external Docker proxy network
+  community.docker.docker_network:
+    name: proxy-net
+    state: present

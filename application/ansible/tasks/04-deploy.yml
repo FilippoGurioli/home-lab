@@ -1,0 +1,20 @@
+- name: Copy central docker-compose.yml file
+  ansible.builtin.copy:
+    src: ../docker/docker-compose.yml
+    dest: /home/rioly/apps/docker-compose.yml
+    owner: rioly
+    group: rioly
+    mode: '0644'
+
+- name: Copy .env file for docker-compose variable substitution
+  ansible.builtin.copy:
+    src: ../docker/.env
+    dest: /home/rioly/apps/.env
+    owner: rioly
+    group: rioly
+    mode: '0600'
+
+- name: Deploy Application Docker Compose stack
+  community.docker.docker_compose_v2:
+    project_src: /home/rioly/apps
+    state: present
