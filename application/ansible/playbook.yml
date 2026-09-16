@@ -25,14 +25,17 @@
 
     - name: Template Postgres init
       ansible.builtin.template:
-        src: ../docker/postgres/init/01-authelia.sql.j2
-        dest: /home/rioly/apps/postgres/init/01-authelia.sql
+        src: ../docker/postgres/init/{{ item }}.j2
+        dest: /home/rioly/apps/postgres/init/{{ item }}
         owner: rioly
         group: rioly
         mode: '0644'
+      loop:
+        - 01-authelia.sql
+        - 02-vaultwarden.sql
 
     - name: Set up Authelia prerequisite
       ansible.builtin.import_tasks: tasks/03-authelia-setup.yml
 
     - name: Deploy homelab
-      ansible.builtin.import_tasks: tasks/04-deploy.yml
+      ansible.builtin.import_tasks: tasks/deploy.yml

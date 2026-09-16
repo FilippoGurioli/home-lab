@@ -1,0 +1,8 @@
+CREATE DATABASE vaultwarden;
+CREATE USER vaultwarden WITH ENCRYPTED PASSWORD '{{ lookup("env", "VAULTWARDEN_POSTGRES_PASSWORD") }}';
+GRANT ALL PRIVILEGES ON DATABASE vaultwarden TO vaultwarden;
+
+\c vaultwarden
+
+GRANT ALL ON SCHEMA public TO vaultwarden;
+ALTER SCHEMA public OWNER TO vaultwarden;
