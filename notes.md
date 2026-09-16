@@ -67,6 +67,10 @@ Un-googling myself as much as possible.
 - External connectivity: p1-\[TailScale\] -> p2-\[DuckDNS + SSL\]
 - Internal connectivity (between VMs): Bare LAN connection
 
+- Backup:
+  - Layer 1 (VM-level): Proxmox Backup Server (PBS) — automated, deduplicated, incremental VM snapshots
+  - Layer 2 (app-level): Restic — granular, per-service backups (existing plan)
+
 ## Details
 
 ### Gateway
@@ -94,30 +98,41 @@ Un-googling myself as much as possible.
 
 ### Backup scope
 
-What to backup:
+Two layers, covering different failure modes:
 
+**Layer 1 — Proxmox Backup Server (catastrophic recovery)**
+- Scope: full VM images (Applications, Gateway, Backup)
+- Storage: PBS datastore on the Backup VM's separate HDD
+- Dedup + incremental via dirty-bitmap tracking; client-side encrypted
+- Retention: same 7 daily / 4 weekly / 12 monthly scheme, via PBS's keep-* options
+- Restore: fully GUI-driven through Proxmox — no scripts or docs required
+- Requires QEMU guest agent on the Applications VM for fsfreeze consistency (important for Postgres)
+
+**Layer 2 — Restic (granular, per-service)**
+What to backup:
 - nextcloud (DB too)
 - immich
 - vaultwarden
 - forgejo
 
 How:
-
 - Where possible use built-in export tools
-- Where not: stop applications -> copy DB and FS to staging -> restic backs up staging area -> restart applications
+- Where not: stop application → copy DB and FS to staging → restic backs up staging area → restart application
 
 How often:
-
 - daily to the out-site backup
 - every hour to the staging site, only for Vaultwarden, only latest kept
 
 Retention policy:
+- last 7 daily snapshots
+- last 4 weekly snapshots
+- last 12 monthly snapshots
 
-- the last 7 daily snapshots
-- the last 4 weekly snapshots
-- the last 12 monthly snapshots
+NOTE: something deleted more than 12 months ago cannot be restored via this layer (Layer 1 VM snapshots follow their own retention and are a separate recovery path).
 
-NOTE: something deleted more than 12 month ago cannot be restored
+**Requirement:** a `RESTORE.md` documenting the exact Restic restore commands, tested end-to-end at least once. Layer 1 doesn't need this — Proxmox's UI is the documentation.
+
+**Interim/stopgap:** until Vaultwarden's Layer 2 backup is live, do a manual encrypted vault export periodically.
 
 ### About connectivity
 
@@ -141,6 +156,8 @@ NOTE: something deleted more than 12 month ago cannot be restored
     3. Vaultwarden
     4. Everything else
 7. Backup setup
+    a. PBS datastore + VM backup jobs (Layer 1) — can be done opportunistically, doesn't depend on the full service set existing
+    b. Restic granular pipeline (Layer 2) — build once the service set is settled, covering Nextcloud, Immich, Vaultwarden, Forgejo
 
 ### Repo Structure
 
