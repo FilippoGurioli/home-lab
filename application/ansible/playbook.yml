@@ -33,6 +33,7 @@
       loop:
         - 01-authelia.sql
         - 02-vaultwarden.sql
+        - 03-immich.sql
 
     - name: Set up Authelia prerequisite
       ansible.builtin.import_tasks: tasks/03-authelia-setup.yml

@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:17-alpine
+    image: ghcr.io/immich-app/postgres:17-vectorchord1.1.1
     container_name: postgres
     restart: unless-stopped
     environment:
@@ -16,6 +16,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    shm_size: 128mb
+
+  redis:
+    container_name: immich_redis
+    image: docker.io/valkey/valkey:9@sha256:70739f85ad2ee01a726a965584a0f94895f01b0c60b3cc8b0aeef11eaa6888cf
+    networks:
+      - backend-net
+    healthcheck:
+      test: redis-cli ping | grep -q PONG || exit 1
+    restart: unless-stopped
 
   traefik:
     image: traefik:v3.7
@@ -103,7 +113,53 @@ services:
       - "traefik.http.routers.vaultwarden-admin.tls.certresolver=duckdns-resolver"
       - "traefik.http.routers.vaultwarden-admin.service=vaultwarden"
       - "traefik.http.routers.vaultwarden-admin.middlewares=authelia@file"
-      - "traefik.http.routers.vaultwarden-admin.priority=10"
+      - "traefik.http.routers.vaultwarden-admin.priority=100"
+
+  immich:
+    image: ghcr.io/immich-app/immich-server:v3.2.2
+    container_name: immich
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./immich:/data
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - proxy-net
+      - backend-net
+    environment:
+      - TZ=Europe/Rome
+      - DB_USERNAME=immich
+      - DB_DATABASE_NAME=immich
+      - DB_PASSWORD=${IMMICH_POSTGRES_PASSWORD}
+      - DB_HOSTNAME=postgres
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.immich.rule=Host(`immich.rioly-homelab.duckdns.org`)"
+      - "traefik.http.routers.immich.entrypoints=websecure"
+      - "traefik.http.routers.immich.tls=true"
+      - "traefik.http.routers.immich.tls.certresolver=duckdns-resolver"
+      - "traefik.http.services.immich.loadbalancer.server.port=2283"
+      - "traefik.http.routers.immich.service=immich"
+      - "traefik.http.routers.immich.middlewares=authelia@file"
+
+  immich-machine-learning:
+    container_name: immich-machine-learning
+    image: ghcr.io/immich-app/immich-machine-learning:v3.2.2
+    volumes:
+      - model-cache:/cache
+    restart:
+      unless-stopped
+    networks:
+      - backend-net
+    healthcheck:
+      disable: false
+
+volumes:
+  model-cache:
 
 networks:
   proxy-net:
