@@ -1,0 +1,11 @@
+- name: Install QEMU Guest Agent to enable better backups
+  ansible.builtin.apt:
+    name:
+      - qemu-guest-agent
+    state: present
+
+- name: Ensure qemu-guest-agent service is running and enabled
+  ansible.builtin.service:
+    name: qemu-guest-agent
+    state: started
+    enabled: true

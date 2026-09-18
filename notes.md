@@ -156,8 +156,8 @@ NOTE: something deleted more than 12 months ago cannot be restored via this laye
     3. Vaultwarden
     4. Everything else
 7. Backup setup
-    a. PBS datastore + VM backup jobs (Layer 1) — can be done opportunistically, doesn't depend on the full service set existing
-    b. Restic granular pipeline (Layer 2) — build once the service set is settled, covering Nextcloud, Immich, Vaultwarden, Forgejo
+    1. PBS datastore + VM backup jobs (Layer 1) — can be done opportunistically, doesn't depend on the full service set existing
+    2. Restic granular pipeline (Layer 2) — build once the service set is settled, covering Nextcloud, Immich, Vaultwarden, Forgejo
 
 ### Repo Structure
 

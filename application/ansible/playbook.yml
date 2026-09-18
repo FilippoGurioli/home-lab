@@ -39,3 +39,6 @@
 
     - name: Deploy homelab
       ansible.builtin.import_tasks: tasks/deploy.yml
+
+    - name: Configure backup
+      ansible.builtin.import_tasks: tasks/backup-setup.yml
