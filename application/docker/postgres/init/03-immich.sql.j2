@@ -1,6 +1,7 @@
 CREATE USER immich WITH ENCRYPTED PASSWORD '{{ lookup("env", "IMMICH_POSTGRES_PASSWORD") }}';
 CREATE DATABASE immich;
 GRANT ALL PRIVILEGES ON DATABASE immich TO immich;
+ALTER DATABASE immich OWNER TO immich;
 
 \c immich
 
