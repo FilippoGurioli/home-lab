@@ -6,6 +6,15 @@ set -e
   exit 1
 }
 
+OIDC_FILE="application/docker/authelia/secrets/oidc-private.pem"
+[ -f "$OIDC_FILE" ] || {
+  echo "INFO: generating $OIDC_FILE"
+  OIDC_DIR=$(dirname "$OIDC_FILE")
+  mkdir -p "$OIDC_DIR"
+  openssl genrsa -out "$OIDC_FILE" 4096
+  chmod 600 "$OIDC_FILE"
+}
+
 INVENTORY="hosts.ini"
 REQUIREMENTS="requirements.yml"
 GATEWAY_PLAYBOOK="./gateway/ansible/playbook.yml"

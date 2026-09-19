@@ -75,6 +75,11 @@ Before creating any VM or LXC, the host must have two distinct virtual network b
 - **Create a domain**: create a unique domain and let it point to `10.0.0.2`
 - **Copy the DuckDNS token**: copy the duck dns token and paste it in `application/docker/.env`
 
+## 7. Insert Client Secret for Authelia authentication in Immich
+
+- Copy the secret you've used to generate the variable `AUTHELIA_IMMICH_CLIENT_SECRET_HASH` (the plain text, not the hash)
+- Set it inside Immich by following [this guide](https://www.authelia.com/integration/openid-connect/clients/immich/)
+
 ---
 
 ## Appendix: Quick Reference & Hardware Reminders
