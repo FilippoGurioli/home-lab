@@ -49,7 +49,7 @@ setRootEnvPasswords() {
 }
 
 setAppEnvPasswords() {
-  DUCKDNS_TOKEN="$(askInput "Insert the duck dns token (can be found at https://www.duckdns.org/ after login)")"
+  DUCKDNS_TOKEN="$(askInput "Insert the duck dns token (can be found at https://www.duckdns.org/ after login): ")"
 
   POSTGRES_ADMIN_PASSWORD="$(getRandomSecret)"
   AUTHELIA_POSTGRES_PASSWORD="$(getRandomSecret)"
@@ -61,29 +61,30 @@ setAppEnvPasswords() {
   AUTHELIA_HMAC_SECRET="$(getRandomSecret)"
 
   AUTHELIA_ADMIN_PASSWORD="$(askPassword "Authelia admin Account")"
-  AUTHELIA_ADMIN_PASSWORD_HASH=$(docker run --rm authelia/authelia:4 authelia crypto hash generate argon2 --password "$AUTHELIA_ADMIN_PASSWORD")
+  AUTHELIA_ADMIN_PASSWORD_HASH=$(docker run --rm authelia/authelia:4 authelia crypto hash generate argon2 --password "$AUTHELIA_ADMIN_PASSWORD" | sed 's/^Digest: //')
 
   VAULTWARDEN_ADMIN_TOKEN_PLAIN="$(askPassword "Vaultwarden admin Token")"
-  VAULTWARDEN_ADMIN_TOKEN=$(docker run --rm -it vaultwarden/server:1.37 /vaultwarden hash --password "$VAULTWARDEN_ADMIN_TOKEN_PLAIN")
+  VAULTWARDEN_ADMIN_TOKEN=$(printf '%s' "$VAULTWARDEN_ADMIN_TOKEN_PLAIN" | docker run --rm -i alpine sh -c \
+    'apk add -q argon2 && argon2 "$(head -c 32 /dev/urandom | base64)" -e -id -k 65540 -t 3 -p 4')
 
   AUTHELIA_IMMICH_CLIENT_SECRET="$(getRandomSecret)"
-  AUTHELIA_IMMICH_CLIENT_SECRET_HASH="$(docker run --rm authelia/authelia:4 authelia crypto hash generate pbkdf2 --variant sha512 --password "$AUTHELIA_IMMICH_CLIENT_SECRET")"
+  AUTHELIA_IMMICH_CLIENT_SECRET_HASH="$(docker run --rm authelia/authelia:4 authelia crypto hash generate pbkdf2 --variant sha512 --password "$AUTHELIA_IMMICH_CLIENT_SECRET" | sed 's/^Digest: //')"
   {
-    echo "DUCKDNS_TOKEN=\"$DUCKDNS_TOKEN\""
-    echo "POSTGRES_ADMIN_PASSWORD=\"$POSTGRES_ADMIN_PASSWORD\""
-    echo "VAULTWARDEN_POSTGRES_PASSWORD=\"$VAULTWARDEN_POSTGRES_PASSWORD\""
+    echo "DUCKDNS_TOKEN='$DUCKDNS_TOKEN'"
+    echo "POSTGRES_ADMIN_PASSWORD='$POSTGRES_ADMIN_PASSWORD'"
+    echo "VAULTWARDEN_POSTGRES_PASSWORD='$VAULTWARDEN_POSTGRES_PASSWORD'"
     echo "# vaultwarden admin plain token (if you found yourself to have forgot it): $VAULTWARDEN_ADMIN_TOKEN_PLAIN"
-    echo "VAULTWARDEN_ADMIN_TOKEN=\"$VAULTWARDEN_ADMIN_TOKEN\""
-    echo "IMMICH_POSTGRES_PASSWORD=\"$IMMICH_POSTGRES_PASSWORD\""
+    echo "VAULTWARDEN_ADMIN_TOKEN='$VAULTWARDEN_ADMIN_TOKEN'"
+    echo "IMMICH_POSTGRES_PASSWORD='$IMMICH_POSTGRES_PASSWORD'"
+    echo "AUTHELIA_POSTGRES_PASSWORD='$AUTHELIA_POSTGRES_PASSWORD'"
     echo "# authelia admin plain password (if you found yourself to have forgot it): $AUTHELIA_ADMIN_PASSWORD"
-    echo "AUTHELIA_POSTGRES_PASSWORD=\"$AUTHELIA_POSTGRES_PASSWORD\""
-    echo "AUTHELIA_ADMIN_PASSWORD_HASH=\"$AUTHELIA_ADMIN_PASSWORD_HASH\""
-    echo "AUTHELIA_JWT_SECRET=\"$AUTHELIA_JWT_SECRET\""
-    echo "AUTHELIA_SESSION_SECRET=\"$AUTHELIA_SESSION_SECRET\""
-    echo "AUTHELIA_STORAGE_KEY=\"$AUTHELIA_STORAGE_KEY\""
-    echo "AUTHELIA_HMAC_SECRET=\"$AUTHELIA_HMAC_SECRET\""
+    echo "AUTHELIA_ADMIN_PASSWORD_HASH='$AUTHELIA_ADMIN_PASSWORD_HASH'"
+    echo "AUTHELIA_JWT_SECRET='$AUTHELIA_JWT_SECRET'"
+    echo "AUTHELIA_SESSION_SECRET='$AUTHELIA_SESSION_SECRET'"
+    echo "AUTHELIA_STORAGE_KEY='$AUTHELIA_STORAGE_KEY'"
+    echo "AUTHELIA_HMAC_SECRET='$AUTHELIA_HMAC_SECRET'"
     echo "# authelia immich client secret (to be inserted later on in immich administrator > OAuth): $AUTHELIA_IMMICH_CLIENT_SECRET"
-    echo "AUTHELIA_IMMICH_CLIENT_SECRET_HASH=\"$AUTHELIA_IMMICH_CLIENT_SECRET_HASH\""
+    echo "AUTHELIA_IMMICH_CLIENT_SECRET_HASH='$AUTHELIA_IMMICH_CLIENT_SECRET_HASH'"
   } >"$APP_ENV"
 
   echo "[INFO] Passwords successfully written to $APP_ENV"
