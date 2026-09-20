@@ -2,8 +2,9 @@
 set -e
 
 [ -f .env ] || {
-  echo "ERROR: .env file not found"
-  exit 1
+  echo "[INFO] root .env not found, starting setup procedure..."
+  bash .scripts/generate-dotenvs.sh
+  bash .scripts/setup-local-ssh.sh
 }
 
 OIDC_FILE="application/docker/authelia/secrets/oidc-private.pem"
