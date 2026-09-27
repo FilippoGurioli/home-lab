@@ -1,15 +1,17 @@
 title: Home Lab
+description: Rioly Homelab Dashboard
 theme: dark
 color: slate
+background:
+  image: https://istockphoto.com/photos/ascii-photos
+  blur: md
+  opacity: 50
 
-search:
-  provider: brave
-  target: _blank
-
-headerStyle: boxed
+headerStyle: clean
 layout:
   Services:
     style: grid
     columns: 3
 
 showStats: true
+statusStyle: dot

@@ -1,0 +1,17 @@
+- Mail:
+  - Proton:
+    - abbr: PR
+      icon: proton
+      href: https://mail.proton.me/u/2/inbox#category=primary
+
+- Developer:
+  - Github:
+    - abbr: GH
+      icon: github
+      href: https://github.com/
+
+- Network:
+  - Tailscale:
+    - abbr: TS
+      icon: tailscale
+      href: https://console.tailscale.com/admin/machines?refreshed=true
