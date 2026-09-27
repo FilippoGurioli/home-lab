@@ -19,7 +19,7 @@ services:
     shm_size: 128mb
 
   redis:
-    container_name: immich_redis
+    container_name: immich-redis
     image: docker.io/valkey/valkey:9@sha256:70739f85ad2ee01a726a965584a0f94895f01b0c60b3cc8b0aeef11eaa6888cf
     networks:
       - backend-net
@@ -156,6 +156,26 @@ services:
       - backend-net
     healthcheck:
       disable: false
+
+  homepage:
+    image: ghcr.io/gethomepage/homepage:v2.4
+    container_name: homepage
+    restart: unless-stopped
+    volumes:
+      - ./homepage:/app/config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - proxy-net
+    environment:
+      - HOMEPAGE_ALLOWED_HOSTS=rioly-homelab.duckdns.org,*.rioly-homelab.duckdns.org,localhost
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homepage.rule=Host(`rioly-homelab.duckdns.org`)"
+      - "traefik.http.routers.homepage.entrypoints=websecure"
+      - "traefik.http.routers.homepage.tls=true"
+      - "traefik.http.routers.homepage.tls.certresolver=duckdns-resolver"
+      - "traefik.http.routers.homepage.middlewares=authelia@file"
+      - "traefik.http.services.homepage.loadbalancer.server.port=3000"
 
 volumes:
   model-cache:

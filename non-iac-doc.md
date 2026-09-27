@@ -80,6 +80,15 @@ Before creating any VM or LXC, the host must have two distinct virtual network b
 - Copy the secret you've used to generate the variable `AUTHELIA_IMMICH_CLIENT_SECRET_HASH` (the plain text, not the hash)
 - Set it inside Immich by following [this guide](https://www.authelia.com/integration/openid-connect/clients/immich/)
 
+## 8. Generate Immich API Key
+
+- Go to `immich.rioly-homelab.duckdns.org` and log in
+- Go to Account (top right icon) > Account Settings > Api Keys
+- Click on `+ New API Key`
+- Configure it to have all read-only permissions
+- Copy the API Key
+- Paste the value in `application/docker/.env` > `IMMICH_API_KEY`
+
 ---
 
 ## Appendix: Quick Reference & Hardware Reminders

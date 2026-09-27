@@ -7,7 +7,7 @@ log:
 
 api:
   dashboard: true
-  insecure: false
+  insecure: true # exposed only in docker internal network
 
 entryPoints:
   web:
@@ -23,6 +23,10 @@ entryPoints:
     address: ":443"
     http:
       aliasHeadersStrategy: reject
+    forwardedHeaders:
+      trustedIPs:
+        - "10.0.0.0/24"   # internal VM subnet
+        - "172.16.0.0/12" # docker internal net
 
 certificatesResolvers:
   duckdns-resolver:

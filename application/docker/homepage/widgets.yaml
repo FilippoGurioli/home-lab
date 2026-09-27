@@ -1,0 +1,14 @@
+- datetime:
+    text_size: xl
+    format:
+      timeStyle: short
+      dateStyle: medium
+
+- resources:
+    cpu: true
+    memory: true
+    disk: /
+
+- search:
+    provider: brave
+    target: _blank

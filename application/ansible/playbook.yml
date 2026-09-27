@@ -38,6 +38,9 @@
     - name: Set up Authelia prerequisite
       ansible.builtin.import_tasks: tasks/03-authelia-setup.yml
 
+    - name: Set up Homepage prerequisite
+      ansible.builtin.import_tasks: tasks/04-homepage-setup.yml
+
     - name: Deploy homelab
       ansible.builtin.import_tasks: tasks/deploy.yml
 

@@ -32,11 +32,15 @@ access_control:
   rules:
     - domain: 'auth.rioly-homelab.duckdns.org'
       policy: 'bypass'
-    - domain: '*.rioly-homelab.duckdns.org'
+    - domain:
+      - 'rioly-homelab.duckdns.org'
+      - '*.rioly-homelab.duckdns.org'
       networks:
         - 'lan'
       policy: 'one_factor'
-    - domain: '*.rioly-homelab.duckdns.org'
+    - domain:
+      - 'rioly-homelab.duckdns.org'
+      - '*.rioly-homelab.duckdns.org'
       policy: 'two_factor'
 
 regulation:

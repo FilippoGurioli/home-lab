@@ -1,0 +1,15 @@
+title: Home Lab
+theme: dark
+color: slate
+
+search:
+  provider: brave
+  target: _blank
+
+headerStyle: boxed
+layout:
+  Services:
+    style: grid
+    columns: 3
+
+showStats: true

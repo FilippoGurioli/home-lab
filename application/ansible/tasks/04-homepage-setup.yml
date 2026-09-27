@@ -1,0 +1,27 @@
+- name: Ensure Homepage directory exists
+  ansible.builtin.file:
+    path: /home/rioly/apps/homepage
+    state: directory
+    owner: rioly
+    group: rioly
+    mode: '0755'
+
+- name: Template Homepage services.yaml
+  ansible.builtin.template:
+    src: ../docker/homepage/services.yaml.j2
+    dest: /home/rioly/apps/homepage/services.yaml
+    owner: rioly
+    group: rioly
+    mode: '0644'
+
+- name: Copy Rest of Homepage Configs
+  ansible.builtin.copy:
+    src: ../docker/homepage/{{ item }}.yaml
+    dest: /home/rioly/apps/homepage/
+    owner: rioly
+    group: rioly
+    mode: '0644'
+  loop:
+    - docker
+    - settings
+    - widgets
