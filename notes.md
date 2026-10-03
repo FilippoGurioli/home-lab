@@ -16,7 +16,7 @@ Un-googling myself as much as possible.
 - audiobookshelf
 - forgejo
 - homepage
-- Valutwarden
+- Vaultwarden
 - gotify
 - searXNG
 - Authelia

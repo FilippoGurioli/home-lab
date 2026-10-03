@@ -46,3 +46,11 @@ providers:
   file:
     directory: "/etc/traefik/dynamic"
     watch: true
+
+accessLog:
+  filePath: "/var/log/traefik/access.log"
+  bufferingSize: 100
+  filters:
+    statusCodes:
+      - "200-299"
+      - "400-599"

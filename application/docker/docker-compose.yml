@@ -44,6 +44,7 @@ services:
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
       - ./acme.json:/etc/traefik/acme.json
       - ./dynamic:/etc/traefik/dynamic:ro
+      - ./logs/traefik:/var/log/traefik
     networks:
       - proxy-net
     labels:
